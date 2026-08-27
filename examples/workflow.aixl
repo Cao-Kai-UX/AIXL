@@ -1,0 +1,95 @@
+@aixl v0.1
+request {
+  id: "REQ-001"
+  intent: "complete safety analysis"
+  objective: "identify_risk"
+
+  task: {
+    id: "TASK-001"
+    input: "inspection records"
+    output: "risk report"
+    state: "pending"
+    requires: ["document-analysis"]
+  }
+
+  constraints: [
+    "use supplied records",
+    "cite evidence"
+  ]
+}
+
+@aixl v0.1
+handoff {
+  id: "HANDOFF-001"
+  task: @TASK-001
+  objective: "identify_risk"
+
+  facts: [
+    {
+      id: "F1"
+      content: "Inspection record shows repeated overload alarms."
+      verification: "verified"
+    }
+  ]
+
+  assumptions: [
+    {
+      id: "A1"
+      content: "The recorded alarm timestamps are synchronized."
+    }
+  ]
+
+  hypotheses: [
+    {
+      id: "H1"
+      content: "The primary risk is related to recurring overload conditions."
+    }
+  ]
+
+  evidence: [
+    {
+      id: "E1"
+      supports: @H1
+      source: "inspection records"
+    }
+  ]
+
+  inferences: [
+    {
+      id: "I1"
+      from: [@F1, @E1]
+      supports: @H1
+    }
+  ]
+
+  beliefs: [
+    {
+      id: "B1"
+      about: @H1
+      confidence: 0.82
+    }
+  ]
+
+  uncertainty: [
+    {
+      id: "U1"
+      content: "The cause of the overload condition has not been independently confirmed."
+    }
+  ]
+
+  completed: [
+    "reviewed supplied inspection records",
+    "identified candidate risk hypothesis"
+  ]
+
+  unresolved: [@U1]
+
+  next: [
+    {
+      action: "verify_root_cause"
+      target: @H1
+    }
+  ]
+
+  state: "partial"
+}
