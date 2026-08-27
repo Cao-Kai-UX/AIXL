@@ -1,0 +1,42 @@
+@aixl v0.1
+request {
+  id: "req-001"
+  intent: "produce a verified analysis"
+  task: {
+    id: "task-001"
+    input: ["source-data"]
+    output: "analysis-report"
+    state: "pending"
+  }
+  constraint: [
+    "use available evidence",
+    "identify uncertainty"
+  ]
+}
+
+response {
+  id: "res-001"
+  state: "partial"
+  result: {
+    claim: "risk level is elevated"
+    confidence: 0.82
+    evidence: ["evidence-001", "evidence-002"]
+  }
+  next: {
+    intent: "independent verification"
+    task: {
+      id: "task-002"
+      input: ["res-001"]
+      output: "verification-result"
+      state: "pending"
+    }
+  }
+}
+
+handoff {
+  id: "handoff-001"
+  owner: "verifier-agent"
+  state: "awaiting-verification"
+  context: ["task-001", "res-001"]
+  next: "verify claims and return evidence"
+}
